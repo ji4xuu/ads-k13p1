@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+    /* Memaksa ruang scrollbar selalu ada agar konten tidak tergeser */
+    overflow-y: scroll; 
+    /* Mencegah layar bergeser/melompat karena animasi yang melebar ke samping */
+    overflow-x: hidden; 
+}
