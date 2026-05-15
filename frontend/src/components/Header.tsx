@@ -2,6 +2,7 @@ import { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { Menu, X, LogOut, User, LayoutGrid, FilePlus, History, HelpCircle, Inbox } from 'lucide-react';
 import { withRouter } from '../utils/withRouter';
+import { withAuth } from '../utils/withAuth';
 
 class Header extends Component<any, any> {
   constructor(props: any) {
@@ -16,6 +17,7 @@ class Header extends Component<any, any> {
   };
 
   handleLogout = () => {
+    this.props.auth.logout();
     this.props.navigate('/');
   };
 
@@ -78,8 +80,8 @@ class Header extends Component<any, any> {
               {/* Info User */}
               <div className="flex items-center gap-3">
                 <div className="flex flex-col text-right hidden lg:flex">
-                  <span className="text-sm font-bold text-white">{isAdmin ? 'Staf TU Demo' : 'Mahasiswa Demo'}</span>
-                  <span className="text-[10px] text-white/70 tracking-wider">{isAdmin ? 'NIP. 19800101' : 'G640001'}</span>
+                  <span className="text-sm font-bold text-white">{this.props.auth.user?.nama ?? '—'}</span>
+                  <span className="text-[10px] text-white/70 tracking-wider">{this.props.auth.user?.nim_nip ?? ''}</span>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-white/10 flex items-center justify-center border border-white/20">
                   <User className="w-4 h-4 text-white" />
@@ -139,8 +141,8 @@ class Header extends Component<any, any> {
                   <User className="w-5 h-5 text-white" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="text-sm font-bold text-white">{isAdmin ? 'Staf TU Demo' : 'Mahasiswa Demo'}</span>
-                  <span className="text-xs text-white/70">{isAdmin ? 'NIP. 19800101' : 'G640001'}</span>
+                  <span className="text-sm font-bold text-white">{this.props.auth.user?.nama ?? '—'}</span>
+                  <span className="text-xs text-white/70">{this.props.auth.user?.nim_nip ?? ''}</span>
                 </div>
               </div>
 
@@ -155,4 +157,4 @@ class Header extends Component<any, any> {
   }
 }
 
-export default withRouter(Header);
+export default withRouter(withAuth(Header));

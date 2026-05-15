@@ -1,32 +1,28 @@
 import { Component, type FormEvent, type ChangeEvent } from 'react';
-import { Search, ChevronRight, FileText, Upload, AlertCircle, Loader2, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { Search, ChevronRight, FileText, Upload, FileCheck, AlertCircle, Loader2, ArrowLeft, CheckCircle2, ClipboardList, X } from 'lucide-react';
 import { withRouter } from '../../utils/withRouter';
+import { withAuth } from '../../utils/withAuth';
+import { servicesApi } from '../../api/services.api';
+import { ticketsApi } from '../../api/tickets.api';
 
 class ApplyTicket extends Component<any, any> {
-  // Data statis layanan (menggantikan import SERVICES eksternal)
-  SERVICES = [
-    { id: 1, name: 'Surat Keterangan Mahasiswa Aktif', description: 'Surat resmi yang menyatakan status mahasiswa aktif semester ini.' },
-    { id: 2, name: 'Legalisir Ijazah / Transkrip', description: 'Pengajuan pengesahan fotokopi dokumen akademik.' },
-    { id: 3, name: 'Permohonan Cuti Akademik', description: 'Pengajuan cuti sementara dari kegiatan perkuliahan.' },
-    { id: 4, name: 'Permohonan Undur Diri', description: 'Prosedur resmi untuk berhenti menjadi mahasiswa IPB.' }
-  ];
-
-  // Data user dummy (menggantikan useAuth)
-  user = {
-    nama: 'Mahasiswa Demo',
-    nim_nip: 'G640001'
-  };
-
   constructor(props: any) {
     super(props);
     this.state = {
+      services: [],
       selectedService: null,
       searchTerm: '',
       purpose: '',
       file: null,
+      fileError: '',
       loading: false,
-      success: false
+      success: false,
+      error: '',
     };
+  }
+
+  componentDidMount() {
+    servicesApi.list().then((services) => this.setState({ services }));
   }
 
   handleSearch = (e: ChangeEvent<HTMLInputElement>) => {
@@ -35,32 +31,46 @@ class ApplyTicket extends Component<any, any> {
 
   handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
-      this.setState({ file: e.target.files[0] });
+      const f = e.target.files[0];
+      const allowed = ['.pdf'];
+      const ext = '.' + (f.name.split('.').pop()?.toLowerCase() ?? '');
+      if (!allowed.includes(ext)) {
+        this.setState({ fileError: 'Format file tidak didukung. Hanya PDF yang diizinkan.' });
+        e.target.value = '';
+        return;
+      }
+      this.setState({ file: f, fileError: '' });
     }
   };
 
-  handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    this.setState({ loading: true });
+  handleRemoveFile = () => {
+    this.setState({ file: null, fileError: '' });
+    const input = document.getElementById('file-upload') as HTMLInputElement;
+    if (input) input.value = '';
+  };
 
-    // Simulasi proses jaringan ke Backend selama 1.5 detik
-    setTimeout(() => {
+  handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    this.setState({ loading: true, error: '' });
+    const { selectedService, purpose, file } = this.state;
+    try {
+      await ticketsApi.submit(selectedService.id, purpose, file);
       this.setState({ loading: false, success: true });
-      
-      // Redirect ke halaman history setelah 2 detik
-      setTimeout(() => {
-        this.props.navigate('/history');
-      }, 2000);
-      
-    }, 1500);
+      setTimeout(() => this.props.navigate('/history'), 2000);
+    } catch (err: any) {
+      this.setState({
+        loading: false,
+        error: err.response?.data?.detail ?? 'Gagal mengirim pengajuan. Coba lagi.',
+      });
+    }
   };
 
   render() {
-    const { selectedService, searchTerm, purpose, file, loading, success } = this.state;
+    const { services, selectedService, searchTerm, purpose, file, loading, success, error } = this.state;
+    const user = this.props.auth?.user;
 
-    // Filter layanan berdasarkan pencarian
-    const filteredServices = this.SERVICES.filter(s => 
-      s.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+    const filteredServices = services.filter((s: any) =>
+      s.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       s.description.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
@@ -107,7 +117,7 @@ class ApplyTicket extends Component<any, any> {
 
             {/* Grid Katalog */}
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-2">
-              {filteredServices.map(service => (
+              {filteredServices.map((service: any) => (
                 <button
                   key={service.id}
                   onClick={() => this.setState({ selectedService: service })}
@@ -150,11 +160,11 @@ class ApplyTicket extends Component<any, any> {
               <div className="grid gap-6 md:grid-cols-2">
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">Nama Lengkap</label>
-                  <input disabled value={this.user.nama} className="block w-full rounded-lg bg-slate-50 border-0 py-3 px-4 text-slate-500 ring-1 ring-inset ring-slate-200 sm:text-sm cursor-not-allowed" />
+                  <input disabled value={user?.nama ?? ''} className="block w-full rounded-lg bg-slate-50 border-0 py-3 px-4 text-slate-500 ring-1 ring-inset ring-slate-200 sm:text-sm cursor-not-allowed" />
                 </div>
                 <div>
                   <label className="block text-sm font-bold text-slate-700 mb-2">NIM</label>
-                  <input disabled value={this.user.nim_nip} className="block w-full rounded-lg bg-slate-50 border-0 py-3 px-4 text-slate-500 ring-1 ring-inset ring-slate-200 sm:text-sm cursor-not-allowed" />
+                  <input disabled value={user?.nim_nip ?? ''} className="block w-full rounded-lg bg-slate-50 border-0 py-3 px-4 text-slate-500 ring-1 ring-inset ring-slate-200 sm:text-sm cursor-not-allowed" />
                 </div>
               </div>
 
@@ -172,28 +182,81 @@ class ApplyTicket extends Component<any, any> {
                 />
               </div>
 
-              {/* Upload Box */}
-              <div>
-                <label className="block text-sm font-bold text-slate-700 mb-2">Upload Berkas Syarat (.pdf, .jpg)</label>
-                <div className={`mt-1 flex justify-center rounded-xl border-2 border-dashed px-6 py-10 transition-colors ${file ? 'border-[#003366] bg-blue-50/30' : 'border-slate-300 hover:border-[#003366] bg-slate-50 hover:bg-slate-50/50'}`}>
-                  <div className="text-center">
-                    <Upload className={`mx-auto h-12 w-12 ${file ? 'text-[#003366]' : 'text-slate-400'}`} />
-                    <div className="mt-4 flex text-sm leading-6 text-slate-600 justify-center">
-                      <label htmlFor="file-upload" className="relative cursor-pointer rounded-md font-bold text-[#003366] focus-within:outline-none hover:text-blue-700">
-                        <span>Upload file</span>
-                        <input id="file-upload" name="file-upload" type="file" className="sr-only" onChange={this.handleFileChange} />
-                      </label>
-                      <p className="pl-1">atau drag and drop</p>
-                    </div>
-                    <p className="text-xs leading-5 text-slate-500 mt-1">PDF, PNG, JPG maksimal 10MB</p>
-                    {file && (
-                      <p className="mt-3 text-sm font-bold text-[#003366] bg-blue-100/50 inline-block px-3 py-1 rounded-full border border-blue-200">
-                        {file.name}
-                      </p>
-                    )}
+              {/* Persyaratan Berkas */}
+              <div className="rounded-xl bg-blue-50 p-4 border border-blue-100">
+                <div className="flex items-start gap-3">
+                  <ClipboardList className="h-5 w-5 text-[#003366] shrink-0 mt-0.5" />
+                  <div className="w-full">
+                    <h3 className="text-sm font-bold text-[#003366]">Persyaratan Berkas</h3>
+                    <p className="mt-1 text-xs text-blue-700 mb-3">Pastikan semua berkas berikut tersedia sebelum mengunggah.</p>
+                    <ul className="space-y-1.5">
+                      {selectedService.berkas.map((item: string, idx: number) => (
+                        <li key={idx} className="flex items-center gap-2 text-sm text-blue-900">
+                          <span className="h-1.5 w-1.5 rounded-full bg-[#003366] shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
               </div>
+
+              {/* Upload Box */}
+              <div>
+                <label className="block text-sm font-bold text-slate-700 mb-2">Upload Berkas Syarat</label>
+
+                {file ? (
+                  <div className="flex items-center justify-between gap-4 rounded-xl border border-[#003366] bg-blue-50/40 px-5 py-4">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-[#003366]/10 text-[#003366]">
+                        <FileCheck className="h-5 w-5" />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-bold text-slate-900 truncate">{file.name}</p>
+                        <p className="text-xs text-slate-500">{(file.size / 1024).toFixed(1)} KB</p>
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={this.handleRemoveFile}
+                      className="shrink-0 flex items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-bold text-red-600 hover:bg-red-50 transition-colors"
+                    >
+                      <X className="h-3.5 w-3.5" /> Hapus
+                    </button>
+                  </div>
+                ) : (
+                  <label
+                    htmlFor="file-upload"
+                    className="mt-1 flex justify-center rounded-xl border-2 border-dashed border-slate-300 hover:border-[#003366] bg-slate-50 hover:bg-slate-50/50 px-6 py-10 transition-colors cursor-pointer"
+                  >
+                    <div className="text-center">
+                      <Upload className="mx-auto h-12 w-12 text-slate-400" />
+                      <div className="mt-4 flex text-sm leading-6 text-slate-600 justify-center">
+                        <span className="font-bold text-[#003366]">Klik area ini</span>
+                        <p className="pl-1">untuk memilih file</p>
+                      </div>
+                      <p className="text-xs leading-5 text-slate-500 mt-1">PDF — maksimal 10MB</p>
+                      <p className="text-xs text-amber-600 font-medium mt-1">Gabungkan semua berkas menjadi satu file PDF sebelum mengunggah.</p>
+                    </div>
+                  </label>
+                )}
+
+                <input id="file-upload" name="file-upload" type="file" accept=".pdf" className="sr-only" onChange={this.handleFileChange} />
+
+                {this.state.fileError && (
+                  <p className="mt-2 text-sm font-medium text-red-600 flex items-center gap-1.5">
+                    <AlertCircle className="h-4 w-4 shrink-0" /> {this.state.fileError}
+                  </p>
+                )}
+              </div>
+
+              {/* Error Banner */}
+              {error && (
+                <div className="rounded-xl bg-red-50 p-4 border border-red-100 flex items-center gap-3">
+                  <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
+                  <p className="text-sm font-medium text-red-700">{error}</p>
+                </div>
+              )}
 
               {/* Warning Banner */}
               <div className="rounded-xl bg-blue-50 p-4 border border-blue-100">
@@ -226,4 +289,4 @@ class ApplyTicket extends Component<any, any> {
   }
 }
 
-export default withRouter(ApplyTicket);
+export default withRouter(withAuth(ApplyTicket));

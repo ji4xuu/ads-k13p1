@@ -1,6 +1,7 @@
 import { Component } from 'react';
 import { FilePlus, History, HelpCircle, ArrowRight } from 'lucide-react';
 import { withRouter } from '../../utils/withRouter';
+import { withAuth } from '../../utils/withAuth';
 
 class Dashboard extends Component<any> {
   // Menu disimpan sebagai properti kelas
@@ -38,7 +39,7 @@ class Dashboard extends Component<any> {
         {/* Header Section */}
         <div className="text-center sm:text-left">
           <h1 className="text-3xl font-extrabold tracking-tight text-slate-900">
-            Halo, <span className="text-[#003366]">Mahasiswa Demo</span> 👋
+            Halo, <span className="text-[#003366]">{this.props.auth?.user?.nama ?? 'Mahasiswa'}</span> 👋
           </h1>
           <p className="mt-2 text-lg text-slate-500">
             Selamat datang di IASH. Apa yang ingin Anda lakukan hari ini?
@@ -95,4 +96,4 @@ class Dashboard extends Component<any> {
   }
 }
 
-export default withRouter(Dashboard);
+export default withRouter(withAuth(Dashboard));
