@@ -124,9 +124,9 @@ class FaqPage extends Component<any, any> {
             <h3 className="text-xl font-bold">Masih butuh bantuan lain?</h3>
             <p className="text-blue-100 mt-1">Tim kami siap membantu kendala administrasi Anda.</p>
           </div>
-          <button className="flex items-center gap-2 px-6 py-3 bg-white text-[#003366] rounded-xl font-bold shadow-sm hover:bg-blue-50 transition-colors">
+          <a href="mailto:helpdesk@apps.ipb.ac.id" className="flex items-center gap-2 px-6 py-3 bg-white text-[#003366] rounded-xl font-bold shadow-sm hover:bg-blue-50 transition-colors">
             <MessageCircle className="h-5 w-5" /> Hubungi Helpdesk
-          </button>
+          </a>
         </div>
       </div>
     );

@@ -1,6 +1,7 @@
 import { Component, type FormEvent } from 'react';
 import { Lock, Mail, GraduationCap, Loader2, AlertCircle } from 'lucide-react';
 import { withRouter } from '../utils/withRouter';
+import { withAuth } from '../utils/withAuth';
 
 class Login extends Component<any, any> {
   constructor(props: any) {
@@ -13,27 +14,16 @@ class Login extends Component<any, any> {
     };
   }
 
-  handleLogin = (e: FormEvent) => {
+  handleLogin = async (e: FormEvent) => {
     e.preventDefault();
     this.setState({ loading: true, error: '' });
-
     const { username, password } = this.state;
-    const { navigate } = this.props;
-
-    // Simulasi proses jaringan (API belum siap)
-    setTimeout(() => {
-      // Logika Smart Redirect
-      if (username === 'mahasiswa_demo@apps.ipb.ac.id' && password === 'mahasiswa123') {
-        navigate('/dashboard');
-      } else if (username === 'staff_demo@apps.ipb.ac.id' && password === 'admin123') {
-        navigate('/admin-dashboard');
-      } else {
-        this.setState({
-          error: 'Username atau password salah. (Gunakan akun demo)',
-          loading: false
-        });
-      }
-    }, 1500); // Simulasi delay 1.5 detik
+    try {
+      const user = await this.props.auth.login(username, password);
+      this.props.navigate(user.role === 'mahasiswa' ? '/dashboard' : '/admin-dashboard');
+    } catch {
+      this.setState({ error: 'Email atau password salah.', loading: false });
+    }
   };
 
   render() {
@@ -130,26 +120,10 @@ class Login extends Component<any, any> {
             </div>
           </div>
           
-          {/* Demo Credentials Box */}
-          <div className="mt-8 rounded-2xl bg-blue-50/50 p-5 border border-blue-100 backdrop-blur-sm">
-            <p className="text-[10px] font-black text-blue-900 uppercase tracking-widest text-center mb-3">Akun Demo</p>
-            <div className="grid grid-cols-2 gap-4 text-[11px] text-blue-700/80">
-              <div className="space-y-1 text-center">
-                <p className="font-black text-blue-900">Mahasiswa:</p>
-                <p className="truncate">mahasiswa_demo@apps.ipb.ac.id</p>
-                <p className="text-xs font-mono">mahasiswa123</p>
-              </div>
-              <div className="space-y-1 text-center border-l border-blue-200">
-                <p className="font-black text-blue-900">Staf TU:</p>
-                <p className="truncate">staff_demo@apps.ipb.ac.id</p>
-                <p className="text-xs font-mono">admin123</p>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     );
   }
 }
 
-export default withRouter(Login);
+export default withRouter(withAuth(Login));
