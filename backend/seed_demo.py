@@ -1,7 +1,10 @@
 """
-Seed akun demo — HANYA untuk development/staging, JANGAN dijalankan di production.
+Seed akun demo — HANYA untuk development/staging, JANGAN dijalankan di production dengan password ini.
 
   python seed_demo.py
+
+Untuk menambah akun baru, tambahkan entry ke DEMO_USERS di bawah lalu jalankan script ini lagi.
+Script ini aman dijalankan berulang — akun yang sudah ada akan dilewati (SKIP).
 """
 
 from app.database import engine, SessionLocal
@@ -12,19 +15,61 @@ from passlib.context import CryptContext
 _pwd = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 DEMO_USERS = [
+    # ── MAHASISWA ────────────────────────────────────────────────────────────────
     {
-        "email": "mahasiswa_demo@apps.ipb.ac.id",
+        "email": "alif.maulana@apps.ipb.ac.id",
         "password": "mahasiswa123",
-        "nama": "Mahasiswa Demo",
-        "nim_nip": "G640001",
+        "nama": "Alif Maulana Pratama",
+        "nim_nip": "G6412210012",
         "role": "mahasiswa",
     },
     {
-        "email": "staff_demo@apps.ipb.ac.id",
+        "email": "siti.rahmawati@apps.ipb.ac.id",
+        "password": "mahasiswa123",
+        "nama": "Siti Rahmawati Dewi",
+        "nim_nip": "G6412210047",
+        "role": "mahasiswa",
+    },
+    {
+        "email": "budi.santoso@apps.ipb.ac.id",
+        "password": "mahasiswa123",
+        "nama": "Budi Santoso",
+        "nim_nip": "G6412200089",
+        "role": "mahasiswa",
+    },
+
+    # ── STAFF DEPARTEMEN (TU Dept. Ilmu Komputer) ────────────────────────────────
+    {
+        "email": "ridwan.tu.ilkom@apps.ipb.ac.id",
         "password": "admin123",
-        "nama": "Staf TU Demo",
-        "nim_nip": "196701011994031001",
+        "nama": "Ridwan Prasetyo",
+        "nim_nip": "197305152000031002",
         "role": "staff_departemen",
+    },
+    {
+        "email": "herman.tu.ilkom@apps.ipb.ac.id",
+        "password": "admin123",
+        "nama": "Herman Wijaya",
+        "nim_nip": "196809221997031003",
+        "role": "staff_departemen",
+    },
+
+    # ── STAFF FAKULTAS (TU Dekanat FMIPA) ───────────────────────────────────────
+    {
+        "email": "sri.wahyuni.fmipa@apps.ipb.ac.id",
+        "password": "admin123",
+        "nama": "Sri Wahyuni",
+        "nim_nip": "197204101999032001",
+        "role": "staff_fakultas",
+    },
+
+    # ── STAFF IPB (Admin Sistem / DAP) ───────────────────────────────────────────
+    {
+        "email": "admin.dap@apps.ipb.ac.id",
+        "password": "admin123",
+        "nama": "Admin Sistem IPB",
+        "nim_nip": "197810202003121001",
+        "role": "staff_ipb",
     },
 ]
 
@@ -46,7 +91,7 @@ def run():
                 nim_nip=data["nim_nip"],
                 role=data["role"],
             ))
-            print(f"  [OK]   User {data['email']} ditambahkan.")
+            print(f"  [OK]   User {data['email']} ({data['role']}) ditambahkan.")
         db.commit()
         print("\nSeed demo users selesai.")
     finally:
