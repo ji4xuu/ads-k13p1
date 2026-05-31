@@ -4,6 +4,7 @@ import { AuthProvider, AuthContext, type AuthContextType } from './context/AuthC
 import Login from './pages/Login';
 import Dashboard from './pages/student/Dashboard';
 import FaqPage from './pages/student/FaqPage';
+import TemplateSurat from './pages/student/TemplateSurat';
 import ApplyTicket from './pages/student/ApplyTicket';
 import History from './pages/student/History';
 import Queue from './pages/admin/Queue';
@@ -57,6 +58,9 @@ export default class App extends Component {
             } />
             <Route path="/history" element={
               <ProtectedRoute role="mahasiswa"><MainLayout><History /></MainLayout></ProtectedRoute>
+            } />
+            <Route path="/template-surat" element={
+              <ProtectedRoute role="mahasiswa"><MainLayout><TemplateSurat /></MainLayout></ProtectedRoute>
             } />
 
             <Route path="/admin-dashboard" element={

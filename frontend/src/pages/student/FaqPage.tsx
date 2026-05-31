@@ -6,21 +6,29 @@ class FaqPage extends Component<any, any> {
   // Data statis FAQ
   FAQS = [
     {
-      question: "Bagaimana cara melacak status pengajuan saya?",
-      answer: "Anda dapat melihat status terbaru melalui menu 'Riwayat Tiket'. Status akan diperbarui secara real-time oleh Staf TU dari Status 'Pending' menjadi 'Disetujui' atau 'Ditolak'."
+      question: "Bagaimana cara login ke IASH?",
+      answer: "Gunakan email IPB (@apps.ipb.ac.id) dan password yang telah diberikan oleh staf TU. Jika belum memiliki akun, hubungi TU Departemen atau TU Fakultas untuk pembuatan akun."
     },
     {
-      question: "Berapa lama waktu proses administrasi di IASH?",
-      answer: "Rata-rata waktu pemrosesan adalah 1-3 hari kerja, tergantung pada jenis layanan dan kelengkapan berkas yang Anda unggah."
+      question: "Bagaimana cara mengajukan tiket layanan?",
+      answer: "Klik menu 'Ajukan Tiket' di navigasi atas. Pilih jenis layanan yang dibutuhkan, isi kolom keperluan dengan jelas, unggah berkas persyaratan jika diminta, lalu klik Kirim. Tiket Anda akan masuk ke antrean dan diproses oleh staf TU."
     },
     {
-      question: "Apa yang harus dilakukan jika pengajuan saya ditolak?",
-      answer: "Klik pada baris riwayat tiket Anda untuk melihat 'Catatan dari Staf TU'. Di sana akan tertera alasan penolakan dan instruksi perbaikan. Anda dapat mengajukan ulang tiket baru setelah melengkapi kekurangan tersebut."
+      question: "Apa arti masing-masing status tiket?",
+      answer: "'Dalam Antrean' berarti tiket sudah diterima dan menunggu diambil staf. 'Diproses' berarti staf sedang menangani tiket Anda. 'Dalam Pembuatan' berarti dokumen sedang disiapkan. 'Selesai' berarti dokumen sudah dapat diunduh. 'Ditolak' berarti ada kekurangan — baca catatan staf untuk mengetahui alasannya."
     },
     {
-      question: "Apakah saya bisa membatalkan tiket yang sudah terlanjur dikirim?",
-      answer: "Saat ini sistem tidak mendukung pembatalan mandiri. Jika terjadi kesalahan fatal, segera hubungi Helpdesk DSITD atau datang ke loket TU terkait untuk pembatalan manual."
-    }
+      question: "Bagaimana cara mengunduh dokumen hasil?",
+      answer: "Buka menu 'Riwayat Tiket', klik tiket yang berstatus Selesai, lalu klik tombol 'Unduh Dokumen'. File PDF akan otomatis terunduh ke perangkat Anda."
+    },
+    {
+      question: "Apa yang harus dilakukan jika tiket saya ditolak?",
+      answer: "Buka tiket yang ditolak di menu 'Riwayat Tiket' dan baca 'Catatan dari Staf TU'. Di sana tercantum alasan penolakan dan instruksi perbaikan. Ajukan tiket baru setelah melengkapi kekurangan yang disebutkan."
+    },
+    {
+      question: "Apa bedanya 'Template Surat' dengan 'Ajukan Tiket'?",
+      answer: "'Template Surat' berisi surat-surat yang dapat diurus sendiri tanpa perlu menunggu staf TU — cukup unduh template, isi data diri, lalu ajukan tanda tangan via DigiSign IPB. 'Ajukan Tiket' digunakan untuk layanan yang memerlukan verifikasi atau keputusan dari staf TU, seperti cuti akademik, pengunduran diri, atau legalisir."
+    },
   ];
 
   constructor(props: any) {
