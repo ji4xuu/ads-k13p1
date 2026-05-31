@@ -43,12 +43,17 @@ Thumbs.db
 ehthumbs.db
 Desktop.ini
 
-# ===== IDE =====
+# ===== IDE / Tooling =====
 .vscode/
 .idea/
 *.swp
 *.swo
 *~
+.claude/
+CLAUDE.md
+
+# ===== Dokumen kerja (bukan bagian produk) =====
+*.docx
 
 # ===== Logs =====
 *.log

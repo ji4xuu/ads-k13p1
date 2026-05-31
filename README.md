@@ -173,15 +173,17 @@ Gunakan output-nya sebagai nilai `SECRET_KEY` di Railway.
 3. Tambah service **dari GitHub repo**, root directory: `backend/`
 4. Set environment variables:
    ```
-   DATABASE_URL=<dari Railway PostgreSQL>
+   DATABASE_URL=${{Postgres.DATABASE_URL}}
    SECRET_KEY=<hasil generate di atas>
-   FRONTEND_URL=https://<nama-app>.vercel.app
-   UPLOAD_DIR=/app/uploads
+   FRONTEND_URL=https://<nama-app>.vercel.app   # tanpa trailing slash
+   UPLOAD_DIR=/tmp/uploads
+   # Email opsional — kosongkan MAIL_USERNAME untuk menonaktifkan:
    MAIL_USERNAME=<gmail>
    MAIL_PASSWORD=<app-password>
    ```
-5. **Tambah Persistent Volume** (PENTING — lihat bagian File Storage di bawah)
-6. Setelah deploy, jalankan seed di Railway Shell:
+   > Start command terbaca otomatis dari `Procfile`. **Jangan** set variabel `PORT` — Railway meng-inject `$PORT` sendiri.
+5. Penyimpanan file: lihat [File Storage](#file-storage) untuk pilihan ephemeral (`/tmp/uploads`) vs persistent (volume).
+6. Setelah deploy, jalankan seed:
    ```bash
    python seed_services.py
    ```
@@ -197,23 +199,20 @@ Gunakan output-nya sebagai nilai `SECRET_KEY` di Railway.
    ```
 4. Deploy
 
-### Ganti Placeholder di CORS (Otomatis)
+### CORS
 
-`FRONTEND_URL` di Railway env vars sudah cukup — tidak perlu edit kode apapun.
+Cukup set `FRONTEND_URL` (tanpa trailing slash) di env vars Railway — tidak perlu edit kode. Backend hanya mengizinkan origin tersebut + `localhost` untuk dev.
 
 ---
 
-## File Storage — Penting
+## File Storage
 
-Railway menggunakan **ephemeral filesystem** (file hilang saat redeploy). Semua PDF yang diupload mahasiswa dan staf akan hilang tanpa persistent storage.
+Filesystem Railway bersifat **ephemeral** — file upload (PDF berkas syarat & hasil) hilang saat redeploy/restart, sedangkan **data di PostgreSQL tetap aman** (tersimpan di service database terpisah).
 
-**Solusi wajib: Railway Persistent Volume**
+- **Free tier / demo:** set `UPLOAD_DIR=/tmp/uploads`. File bersifat sementara — cukup untuk satu sesi demo (alur upload → download tetap berjalan).
+- **Persistent (paid):** tambah **Volume** di service backend dengan mount path `/app/uploads`, lalu set `UPLOAD_DIR=/app/uploads`. File bertahan melewati redeploy.
 
-1. Di Railway project → service backend → tab **Volumes**
-2. Tambah volume, mount path: `/app/uploads`
-3. Pastikan env var `UPLOAD_DIR=/app/uploads` sudah di-set
-
-Tanpa ini, file upload tidak akan bertahan melewati restart/redeploy.
+Untuk produksi sungguhan, opsi yang lebih ideal adalah object storage (S3-compatible / Railway Storage Bucket) dengan database menyimpan path/URL file.
 
 ---
 
@@ -266,9 +265,9 @@ curl -X PATCH https://<backend>/api/admin/users/<user_id>/deactivate -H "Authori
 
 ---
 
-## Keterbatasan yang Diketahui
+## Roadmap / Pengembangan Selanjutnya
 
-Berikut adalah isu yang disadari dan belum diperbaiki, beserta alasannya:
+Penguatan dan fitur yang direncanakan untuk iterasi berikutnya, beserta pertimbangan desainnya:
 
 | Isu | Dampak | Catatan |
 |-----|--------|---------|

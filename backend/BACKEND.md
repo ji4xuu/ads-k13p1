@@ -57,7 +57,7 @@ backend/
 
 ---
 
-## Aturan Arsitektur (Wajib dari Dosen)
+## Aturan Arsitektur
 
 ```
 Request → Route → Service → Repository → ORM Model → Database
@@ -517,7 +517,7 @@ Gunakan endpoint ini via Postman atau curl untuk manajemen akun setelah deploy.
 | `seed_demo.py` | Buat 7 akun demo: 3 mahasiswa, 2 staff_departemen, 1 staff_fakultas, 1 staff_ipb | Development / staging |
 | `seed_services.py` | Buat 14 jenis layanan: 6 tingkat fakultas, 8 tingkat IPB | Development + production (idempotent) |
 
-Seed yang dipakai adalah **`seed_services.py` + `seed_demo.py`** (sesuai CLAUDE.md). Keduanya idempotent — aman dijalankan berkali-kali, skip kalau data sudah ada.
+Seed yang dipakai adalah **`seed_services.py` + `seed_demo.py`**. Keduanya idempotent — aman dijalankan berkali-kali, skip kalau data sudah ada.
 
 **Cara tambah akun baru setelah deploy:** Edit `DEMO_USERS` di `seed_demo.py`, tambahkan entry baru, lalu jalankan `python seed_demo.py`. Atau gunakan endpoint `POST /api/admin/users` dengan token `staff_ipb`.
 
