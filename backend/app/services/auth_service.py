@@ -6,7 +6,6 @@ from sqlalchemy.orm import Session
 from ..config import settings
 from ..models.user_model import User
 from ..repositories.user_repository import UserRepository
-from ..schemas.auth_schema import RegisterRequest
 from ..logger import security_logger
 
 _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -15,21 +14,6 @@ _pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 class AuthService:
     def __init__(self, db: Session):
         self._repo = UserRepository(db)
-
-    def register(self, data: RegisterRequest) -> User:
-        if self._repo.get_by_email(data.email):
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="Email sudah terdaftar.",
-            )
-        hashed = _pwd_context.hash(data.password)
-        return self._repo.create(
-            email=data.email,
-            password_hash=hashed,
-            nama=data.nama,
-            nim_nip=data.nim_nip,
-            role=data.role,
-        )
 
     def login(self, email: str, password: str) -> str:
         user = self._repo.get_by_email(email)

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { Menu, X, LogOut, User, LayoutGrid, FilePlus, History, HelpCircle, Inbox } from 'lucide-react';
+import { Menu, X, LogOut, User, LayoutGrid, FilePlus, History, HelpCircle, Inbox, FileText } from 'lucide-react';
 import { withRouter } from '../utils/withRouter';
 import { withAuth } from '../utils/withAuth';
 
@@ -66,6 +66,9 @@ class Header extends Component<any, any> {
                     <Link to="/history" className={`flex items-center gap-2 text-sm font-medium transition-all py-1 border-b-2 ${this.isActive('/history') ? 'text-white border-white' : 'text-white/70 hover:text-white border-transparent hover:border-white/30'}`}>
                       <History className="w-4 h-4" /> Riwayat Tiket
                     </Link>
+                    <Link to="/template-surat" className={`flex items-center gap-2 text-sm font-medium transition-all py-1 border-b-2 ${this.isActive('/template-surat') ? 'text-white border-white' : 'text-white/70 hover:text-white border-transparent hover:border-white/30'}`}>
+                      <FileText className="w-4 h-4" /> Template Surat
+                    </Link>
                     <Link to="/faqs" className={`flex items-center gap-2 text-sm font-medium transition-all py-1 border-b-2 ${this.isActive('/faqs') ? 'text-white border-white' : 'text-white/70 hover:text-white border-transparent hover:border-white/30'}`}>
                       <HelpCircle className="w-4 h-4" /> FAQs
                     </Link>
@@ -127,6 +130,9 @@ class Header extends Component<any, any> {
                   </Link>
                   <Link to="/history" onClick={this.toggleMobileMenu} className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium ${this.isActive('/history') ? 'bg-white/10 text-white border-l-4 border-white' : 'text-white/70 border-l-4 border-transparent'}`}>
                     <History className="w-5 h-5" /> Riwayat Tiket
+                  </Link>
+                  <Link to="/template-surat" onClick={this.toggleMobileMenu} className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium ${this.isActive('/template-surat') ? 'bg-white/10 text-white border-l-4 border-white' : 'text-white/70 border-l-4 border-transparent'}`}>
+                    <FileText className="w-5 h-5" /> Template Surat
                   </Link>
                   <Link to="/faqs" onClick={this.toggleMobileMenu} className={`flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium ${this.isActive('/faqs') ? 'bg-white/10 text-white border-l-4 border-white' : 'text-white/70 border-l-4 border-transparent'}`}>
                     <HelpCircle className="w-5 h-5" /> FAQs

@@ -45,9 +45,11 @@ Staff mengambil tiket dari pool antrean sesuai levelnya (FIFO, menggunakan `SELE
 
 | Role | Level | Menangani |
 |------|-------|-----------|
-| `staff_departemen` | departemen | Surat keterangan aktif, cuti akademik |
-| `staff_fakultas` | fakultas | Legalisir ijazah/transkrip |
-| `staff_ipb` | ipb | Permohonan undur diri |
+| `staff_departemen` | departemen | _(belum ada layanan level departemen di katalog `seed_services.py` saat ini)_ |
+| `staff_fakultas` | fakultas | 6 layanan tingkat fakultas (cuti, aktif kembali, pengunduran diri, perpanjangan studi, keterangan kelulusan, legalisasi ijazah/transkrip) |
+| `staff_ipb` | ipb | 8 layanan tingkat IPB (surat keterangan aktif, berbagai SK PDDIKTI/ijazah/KTM/beasiswa, SKPI, dll.) |
+
+> Catatan: katalog `seed_services.py` hanya berisi layanan level `fakultas` dan `ipb`. Akun `staff_departemen` tetap bisa login namun antreannya kosong sampai ada layanan level `departemen` ditambahkan.
 
 ---
 
@@ -102,12 +104,17 @@ python seed_services.py
 python seed_demo.py
 ```
 
-Akun demo setelah `seed_demo.py`:
+Akun demo setelah `seed_demo.py` (7 akun):
 
 | Role | Email | Password |
 |------|-------|----------|
-| Mahasiswa | `mahasiswa_demo@apps.ipb.ac.id` | `mahasiswa123` |
-| Staf TU (Departemen) | `staff_demo@apps.ipb.ac.id` | `admin123` |
+| `mahasiswa` | `alif.maulana@apps.ipb.ac.id` | `mahasiswa123` |
+| `mahasiswa` | `siti.rahmawati@apps.ipb.ac.id` | `mahasiswa123` |
+| `mahasiswa` | `budi.santoso@apps.ipb.ac.id` | `mahasiswa123` |
+| `staff_departemen` | `ridwan.tu.ilkom@apps.ipb.ac.id` | `admin123` |
+| `staff_departemen` | `herman.tu.ilkom@apps.ipb.ac.id` | `admin123` |
+| `staff_fakultas` | `sri.wahyuni.fmipa@apps.ipb.ac.id` | `admin123` |
+| `staff_ipb` | `admin.dap@apps.ipb.ac.id` | `admin123` |
 
 ### Frontend
 
@@ -217,7 +224,6 @@ Dokumentasi interaktif tersedia di `http://localhost:8000/docs` (Swagger UI).
 | Method | Endpoint | Auth | Keterangan |
 |--------|----------|------|------------|
 | POST | `/api/auth/login` | — | Login, terima JWT |
-| POST | `/api/auth/register` | — | Registrasi akun baru |
 | GET | `/api/auth/me` | User | Info user yang login |
 | POST | `/api/tickets` | User | Ajukan tiket baru |
 | GET | `/api/tickets/my` | User | Daftar tiket milik sendiri |
@@ -229,7 +235,34 @@ Dokumentasi interaktif tersedia di `http://localhost:8000/docs` (Swagger UI).
 | PATCH | `/api/tickets/{id}/complete` | Staff | Upload dokumen hasil → Selesai |
 | GET | `/api/tickets/{id}/download` | User | Unduh dokumen hasil |
 | GET | `/api/tickets/{id}/download-syarat` | Staff | Unduh berkas syarat mahasiswa |
-| GET | `/api/services` | — | Daftar jenis layanan |
+| GET | `/api/services` | User | Daftar jenis layanan |
+| GET | `/api/admin/users` | `staff_ipb` | Daftar semua user |
+| POST | `/api/admin/users` | `staff_ipb` | Buat akun baru |
+| PATCH | `/api/admin/users/{id}/deactivate` | `staff_ipb` | Nonaktifkan akun |
+
+---
+
+## Manajemen Akun Tanpa UI Admin
+
+Belum ada dashboard admin di frontend. Pembuatan & penonaktifan akun dilakukan **lewat API** oleh user `staff_ipb` (mis. `admin.dap@apps.ipb.ac.id`) — cocok untuk developer mengelola akun setelah deploy tanpa perlu halaman admin.
+
+```bash
+# 1. Login sebagai staff_ipb untuk dapat token
+TOKEN=$(curl -s -X POST https://<backend>/api/auth/login \
+  -d "username=admin.dap@apps.ipb.ac.id&password=<password>" | python3 -c "import sys,json;print(json.load(sys.stdin)['access_token'])")
+
+# 2. Buat akun baru (role: mahasiswa | staff_departemen | staff_fakultas | staff_ipb)
+curl -X POST https://<backend>/api/admin/users \
+  -H "Authorization: Bearer $TOKEN" -H "Content-Type: application/json" \
+  -d '{"email":"baru@apps.ipb.ac.id","password":"rahasia123","nama":"Nama Lengkap","nim_nip":"G64xxxxxx","role":"mahasiswa"}'
+
+# 3. Nonaktifkan akun
+curl -X PATCH https://<backend>/api/admin/users/<user_id>/deactivate -H "Authorization: Bearer $TOKEN"
+```
+
+> Atau pakai Swagger UI di `/docs` (klik **Authorize**, tempel token). Akun `staff_ipb` pertama dibuat lewat `seed_demo.py`.
+
+📘 **Panduan operasional lengkap** (kelola akun & layanan, akses DB, update FE/BE, checklist deploy): lihat [`OPERATIONS.md`](./OPERATIONS.md).
 
 ---
 
@@ -243,7 +276,7 @@ Berikut adalah isu yang disadari dan belum diperbaiki, beserta alasannya:
 | Token tidak bisa direvoke (no blacklist) | Logout hanya hapus dari localStorage; token tetap valid sampai expired | Butuh Redis atau tabel DB tambahan — tidak proporsional untuk skala ini |
 | Tidak ada MFA | Staff bisa dicompromise dengan credential saja | Implementasi butuh library authenticator atau email OTP |
 | Account lockout tidak ada | Brute force per akun bisa melewati rate limit (via VPN/proxy) | Rate limiting per IP sudah ada via slowapi |
-| Password strength tidak divalidasi | Password lemah bisa dipakai saat registrasi | Perlu ditambahkan `@field_validator` di `RegisterRequest` |
+| Password strength tidak divalidasi | Password lemah bisa dipakai saat admin membuat akun | Perlu ditambahkan `@field_validator` di `CreateUserRequest` (`admin_routes.py`) — registrasi mandiri tidak tersedia, akun hanya dibuat oleh `staff_ipb` |
 | Upload hanya 1 file | Mahasiswa harus merge semua dokumen sebelum upload | Schema DB `file_syarat_path` singular; multiple file butuh migrasi schema |
 | Tidak ada CSP header | Risiko XSS dari script injection | Perlu ditambahkan setelah URL asset Vercel diketahui |
 | Token di localStorage | Rentan XSS theft | Tradeoff vs UX (sessionStorage tidak persisten antar tab) |

@@ -7,7 +7,7 @@ from slowapi.errors import RateLimitExceeded
 from app.database import engine
 from app.models import User, ServiceType, Ticket  # noqa: F401 — pastikan semua model terdaftar
 from app.database import Base
-from app.routes import auth_routes, ticket_routes, service_routes
+from app.routes import auth_routes, ticket_routes, service_routes, admin_routes
 from app.limiter import limiter
 from app.config import settings
 
@@ -60,6 +60,7 @@ async def add_security_headers(request: Request, call_next):
 app.include_router(auth_routes.router)
 app.include_router(service_routes.router)
 app.include_router(ticket_routes.router)
+app.include_router(admin_routes.router)
 
 
 @app.get("/")

@@ -11,6 +11,7 @@ from ..services.ticket_service import TicketService
 from ..services.auth_service import AuthService
 from ..schemas.ticket_schema import TicketResponse, TicketRejectRequest, TicketApproveRequest
 from ..config import settings
+from ..limiter import limiter
 
 router = APIRouter(prefix="/api/tickets", tags=["Tickets"])
 
@@ -26,7 +27,9 @@ def _safe_path(upload_dir: str, relative_path: str) -> Path:
 
 
 @router.post("", response_model=TicketResponse, status_code=201)
+@limiter.limit("10/hour")
 async def submit_ticket(
+    request: Request,
     service_type_id: UUID = Form(...),
     purpose: str = Form(..., max_length=2000),
     file: UploadFile | None = File(None),

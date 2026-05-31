@@ -10,7 +10,6 @@ from ..repositories.ticket_repository import TicketRepository
 from ..repositories.service_repository import ServiceRepository
 from .notification_service import NotificationService
 from ..logger import security_logger, audit_logger
-from ..config import settings
 
 # Transisi status yang diizinkan
 _VALID_TRANSITIONS: dict[str, list[str]] = {
