@@ -14,7 +14,6 @@ backend/
 ├── .env.example                    # Template env vars
 ├── seed_demo.py                    # Seed akun demo (mahasiswa + staff)
 ├── seed_services.py                # Seed jenis layanan akademik
-├── seed.py                         # Seed gabungan
 ├── uploads/                        # File upload (berkas syarat & hasil)
 │   ├── berkas_syarat/              # File yang diupload mahasiswa saat submit
 │   └── berkas_hasil/               # File dokumen hasil yang diupload staff
@@ -45,6 +44,7 @@ backend/
     ├── services/                   # Business logic layer
     │   ├── auth_service.py
     │   ├── ticket_service.py
+    │   ├── service_service.py
     │   ├── admin_service.py
     │   └── notification_service.py
     │
@@ -374,6 +374,18 @@ Semua logika bisnis ada di sini.
 
 ---
 
+### `services/service_service.py`
+
+| Method | Fungsi |
+|--------|--------|
+| `list_services()` | Daftar semua jenis layanan (memanggil `ServiceRepository`) |
+
+Dipakai oleh `routes/service_routes.py` — route tidak memanggil repository langsung agar layering tetap `Route → Service → Repository`.
+
+**Imports dari:** `repositories/service_repository.py`
+
+---
+
 ### `services/admin_service.py`
 
 | Method | Fungsi |
@@ -504,9 +516,8 @@ Gunakan endpoint ini via Postman atau curl untuk manajemen akun setelah deploy.
 |--------|--------|-----------------|
 | `seed_demo.py` | Buat 7 akun demo: 3 mahasiswa, 2 staff_departemen, 1 staff_fakultas, 1 staff_ipb | Development / staging |
 | `seed_services.py` | Buat 14 jenis layanan: 6 tingkat fakultas, 8 tingkat IPB | Development + production (idempotent) |
-| `seed.py` | Jalankan keduanya sekaligus | Shortcut |
 
-Semua seed script idempotent — aman dijalankan berkali-kali, skip kalau data sudah ada.
+Seed yang dipakai adalah **`seed_services.py` + `seed_demo.py`** (sesuai CLAUDE.md). Keduanya idempotent — aman dijalankan berkali-kali, skip kalau data sudah ada.
 
 **Cara tambah akun baru setelah deploy:** Edit `DEMO_USERS` di `seed_demo.py`, tambahkan entry baru, lalu jalankan `python seed_demo.py`. Atau gunakan endpoint `POST /api/admin/users` dengan token `staff_ipb`.
 
