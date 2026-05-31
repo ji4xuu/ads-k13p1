@@ -25,3 +25,12 @@ class UserRepository:
         self._db.commit()
         self._db.refresh(user)
         return user
+
+    def list_all(self) -> list[User]:
+        return self._db.query(User).order_by(User.created_at.desc()).all()
+
+    def deactivate(self, user: User) -> User:
+        user.is_active = False
+        self._db.commit()
+        self._db.refresh(user)
+        return user

@@ -1,5 +1,5 @@
 import { Component } from 'react';
-import { FilePlus, History, HelpCircle, ArrowRight } from 'lucide-react';
+import { FilePlus, History, HelpCircle, FileText, ArrowRight } from 'lucide-react';
 import { withRouter } from '../../utils/withRouter';
 import { withAuth } from '../../utils/withAuth';
 
@@ -20,6 +20,13 @@ class Dashboard extends Component<any> {
       icon: <History className="h-8 w-8 text-[#003366] group-hover:text-white transition-colors" />,
       path: '/history',
       color: 'bg-slate-50',
+    },
+    {
+      title: 'Template Surat',
+      description: 'Unduh template dan panduan pengisian dokumen untuk pengajuan layanan.',
+      icon: <FileText className="h-8 w-8 text-[#003366] group-hover:text-white transition-colors" />,
+      path: '/template-surat',
+      color: 'bg-emerald-50',
     },
     {
       title: 'Bantuan & FAQs',

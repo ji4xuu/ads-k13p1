@@ -25,3 +25,9 @@ def require_mahasiswa(current_user: User = Depends(get_current_user)) -> User:
     if current_user.role != "mahasiswa":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Hanya mahasiswa yang dapat mengakses ini.")
     return current_user
+
+
+def require_ipb_staff(current_user: User = Depends(get_current_user)) -> User:
+    if current_user.role != "staff_ipb":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Hanya admin sistem yang dapat mengakses ini.")
+    return current_user
