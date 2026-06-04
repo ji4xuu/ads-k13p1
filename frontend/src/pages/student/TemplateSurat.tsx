@@ -11,7 +11,7 @@ const TEMPLATES = [
       "Rentang waktu magang (tanggal mulai – selesai)",
       "Bidang atau divisi yang dituju",
     ],
-    link: "#",
+    link: "https://docs.google.com/document/d/1QiOIv-u9ZZkiIV5HwrgyH4t8J7MOSrFm/edit?usp=drive_link",
   },
   {
     nama: "Surat Pengantar Penelitian",
@@ -21,7 +21,7 @@ const TEMPLATES = [
       "Topik penelitian secara singkat",
       "Rentang waktu penelitian",
     ],
-    link: "#",
+    link: "https://docs.google.com/document/d/1izl-ud3xkOSwXqizgs6JcLZIYBV124Vt/edit?usp=drive_link",
   },
   {
     nama: "Surat Pengantar Permintaan Data",
@@ -31,7 +31,7 @@ const TEMPLATES = [
       "Jenis data yang dibutuhkan",
       "Keperluan dan penggunaan data",
     ],
-    link: "#",
+    link: "https://docs.google.com/document/d/1SrSUXsDfHqfaG4bIAigaJjqUdZS5GyfD/edit?usp=drive_link",
   },
   {
     nama: "Surat Pengantar Kunjungan",
@@ -41,7 +41,7 @@ const TEMPLATES = [
       "Tanggal kunjungan",
       "Tujuan kunjungan",
     ],
-    link: "#",
+    link: "https://docs.google.com/document/d/1_-BT8skIsP-cI4jibx-TWYaMSj5t2_I-/edit?usp=drive_link",
   },
 ];
 

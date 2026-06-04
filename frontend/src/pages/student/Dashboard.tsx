@@ -93,7 +93,7 @@ class Dashboard extends Component<any> {
             </div>
             <div>
               <h4 className="font-bold text-slate-900">Butuh Bantuan Cepat?</h4>
-              <p className="text-sm text-slate-500">Hubungi Helpdesk Direktorat Administrasi Pendidikan jika Anda mengalami kendala sistem.</p>
+              <p className="text-sm text-slate-500">Hubungi <a href="https://wa.me/6281234511395?text=Halo%20Admin%20ISC!%20ada%20sesuatu%20yang%20ingin%20saya%20tanyakan%2C%20bisa%20tolong%20bantu%20saya%3F" target="_blank" rel="noopener noreferrer" className="font-semibold text-[#003366] hover:underline">ISC Helpcenter</a> jika Anda mengalami kendala sistem.</p>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import { Component, type ChangeEvent } from 'react';
-import { HelpCircle, ChevronDown, ChevronUp, Search, MessageCircle } from 'lucide-react';
+import { HelpCircle, ChevronDown, ChevronUp, Search, MessageCircle, Mail } from 'lucide-react';
 import { withRouter } from '../../utils/withRouter';
 
 class FaqPage extends Component<any, any> {
@@ -130,11 +130,24 @@ class FaqPage extends Component<any, any> {
         <div className="mt-16 p-8 rounded-3xl bg-[#003366] text-white flex flex-col md:flex-row items-center justify-between gap-6 shadow-xl shadow-blue-900/10">
           <div className="text-center md:text-left">
             <h3 className="text-xl font-bold">Masih butuh bantuan lain?</h3>
-            <p className="text-blue-100 mt-1">Tim kami siap membantu kendala administrasi Anda.</p>
+            <p className="text-blue-100 mt-1">Tim ISC Helpcenter siap membantu kendala administrasi Anda.</p>
           </div>
-          <a href="mailto:helpdesk@apps.ipb.ac.id" className="flex items-center gap-2 px-6 py-3 bg-white text-[#003366] rounded-xl font-bold shadow-sm hover:bg-blue-50 transition-colors">
-            <MessageCircle className="h-5 w-5" /> Hubungi Helpdesk
-          </a>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a
+              href="https://wa.me/6281234511395?text=Halo%20Admin%20ISC!%20ada%20sesuatu%20yang%20ingin%20saya%20tanyakan%2C%20bisa%20tolong%20bantu%20saya%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white text-[#003366] rounded-xl font-bold shadow-sm hover:bg-blue-50 transition-colors whitespace-nowrap"
+            >
+              <MessageCircle className="h-5 w-5" /> Chat ISC Helpcenter
+            </a>
+            <a
+              href="mailto:ask@apps.ipb.ac.id"
+              className="flex items-center justify-center gap-2 px-6 py-3 bg-white/10 text-white border border-white/30 rounded-xl font-bold hover:bg-white/20 transition-colors whitespace-nowrap"
+            >
+              <Mail className="h-5 w-5" /> Email
+            </a>
+          </div>
         </div>
       </div>
     );

@@ -110,7 +110,7 @@ class Login extends Component<any, any> {
 
               <div className="mt-10 text-center space-y-6">
                 <p className="text-xs font-medium text-slate-400">
-                  Lupa password? <span className="text-[#003366] font-bold hover:underline cursor-pointer">Hubungi Helpdesk ICT IPB</span>
+                  Lupa password? <a href="https://wa.me/6281234511395?text=Halo%20Admin%20ISC!%20ada%20sesuatu%20yang%20ingin%20saya%20tanyakan%2C%20bisa%20tolong%20bantu%20saya%3F" target="_blank" rel="noopener noreferrer" className="text-[#003366] font-bold hover:underline">Hubungi ISC Helpcenter</a>
                 </p>
                 
                 <div className="flex items-center justify-center gap-4 border-t border-slate-100 pt-8">
