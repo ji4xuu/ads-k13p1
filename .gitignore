@@ -68,3 +68,9 @@ htmlcov/
 
 # ===== Vite =====
 frontend/.vite/
+
+# ===== Laporan & dokumen kuliah (bukan bagian produk) =====
+laporan_akhir_ads_p2_k1.md
+template_ads_2025.md
+LAPORAN_AKHIR_ADS_IASH.md
+laporan-aset/
